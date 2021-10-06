@@ -39,6 +39,21 @@ def check_probability_sum(p):
         )
 
 
+def shannon_entropy(p):
+    """
+    Compute Shannon entropy.
+    Input:
+        1D ndarray $p(x)$
+    Output:
+        Float $S(X) = - \sum_x p(x) \log p(x)$
+    """
+
+    if p.ndim != 1:
+        raise ValueError('Input array p must be 1D ndarray')
+
+    return sum(-p[i] * np.log(p[i]) for i in range(len(p)))
+
+
 # main
 if __name__ == '__main__':
 
@@ -46,6 +61,9 @@ if __name__ == '__main__':
     x = np.array([0.95, 0.05])
     print("Entropy of x=", x)
     print("Satisfy sum(x)=1:", check_probability_sum(x))
+    print("Code: ", '{:6.4f}'.format(
+        shannon_entropy(x)
+    ))
     print("Scipy:", '{:6.4f}'.format(
         stats.entropy(x, base=np.e)
     ))

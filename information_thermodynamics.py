@@ -57,6 +57,21 @@ def marginal_probability(p):
     return sum(p[:][j] for j in range(Y_range))
 
 
+def conditional_probability(p):
+    """
+    Compute conditional probability distribution.
+    Input:
+        2D ndarray $p(x,y)$
+    Output:
+        2D ndarray $p(x|y) = p(x,y) / p(y)$
+    """
+
+    if p.ndim != 2:
+        raise ValueError('Input array p must be 2D ndarray')
+
+    return p / marginal_probability(p)
+
+
 def shannon_entropy(p):
     """
     Compute Shannon entropy.
@@ -70,6 +85,30 @@ def shannon_entropy(p):
         raise ValueError('Input array p must be 1D ndarray')
 
     return sum(-p[i] * np.log(p[i]) for i in range(len(p)))
+
+
+def conditional_entropy(p):
+    """
+    Compute conditional entropy.
+    Input:
+        2D ndarray $p(x,y)$
+    Output:
+        Float $S(X|Y) = - \sum_{x,y} p(x,y) \log p(x|y)$
+    """
+
+    if p.ndim != 2:
+        raise ValueError('Input array p must be 2D ndarray')
+
+    X_range = np.shape(p)[0]
+    Y_range = np.shape(p)[1]
+
+    # Conditional probability distribution p(x|y)
+    px_cond_y = conditional_probability(p)
+
+    return sum(
+        sum(-p[i][j] * np.log(px_cond_y[i][j]) for i in range(X_range))
+        for j in range(Y_range)
+    )
 
 
 def relative_entropy(p, q):
@@ -115,19 +154,25 @@ def mutual_information(p):
     px = marginal_probability(p)
     py = marginal_probability(p.transpose()).transpose()
 
-    """
-    # I(X;Y) = S(X) - S(X|Y)
-    MI_se = shannon_entropy(marginal_probability(p)) - conditional_entropy(p)  ### DOES NOT WORK ###
-    # I(X;Y) = D_\mathrm{KL} (p(x,y) || p(x)p(y))
-    MI_kl = relative_entropy(p, px*py)  ### DOES NOT WORK ###
-    """
-
     # I(X;Y) = \sum_x p(x) [log p(x,y) - log p(x) - log p(y)]
-    return sum(sum(
+    MI = sum(sum(
         p[i][j] * (np.log(p[i][j]) - np.log(px[i]) - np.log(py[j]))
         for i in range(X_range))
         for j in range(Y_range)
     )
+    # I(X;Y) = S(X) - S(X|Y)
+    MI_se = shannon_entropy(marginal_probability(p)) - conditional_entropy(p)
+    # # I(X;Y) = D_\mathrm{KL} (p(x,y) || p(x)p(y))
+    # MI_kl = relative_entropy(p, px*py)  ### DOES NOT WORK ###
+
+    print("=====")
+    print("Compute MI in different ways")
+    print("By definition     =", '{:6.4}'.format(MI))
+    print("By Shannon entropy=", '{:6.4}'.format(MI_se))
+    # print("By KL divergence  =", '{:6.4}'.format(MI_kl))
+    print("=====")
+
+    return MI
 
 
 # main

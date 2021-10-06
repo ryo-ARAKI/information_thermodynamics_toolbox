@@ -87,6 +87,27 @@ def shannon_entropy(p):
     return sum(-p[i] * np.log(p[i]) for i in range(len(p)))
 
 
+def joint_entropy(p):
+    """
+    Compute joint entropy.
+    Input:
+        2D ndarray $p(x,y)$
+    Output:
+        Float $S(X, Y) = - \sum_{x,y} p(x,y) \log p(x,y)$
+    """
+
+    if p.ndim != 2:
+        raise ValueError('Input array p must be 2D ndarray')
+
+    X_range = np.shape(p)[0]
+    Y_range = np.shape(p)[1]
+
+    return sum(
+        sum(-p[i][j] * np.log(p[i][j]) for i in range(X_range))
+        for j in range(Y_range)
+    )
+
+
 def conditional_entropy(p):
     """
     Compute conditional entropy.
@@ -157,6 +178,33 @@ def joint_relative_entropy(p, q):
     return sum(
         sum(p[i][j] * np.log(p[i][j]/q[i][j]) for i in range(X_range))
         for j in range(Y_range)
+    )
+
+
+def conditional_relative_entropy(p, q):
+    """
+    Compute the conditional relative entropy.
+    Input:
+        2D ndarray * 2 $p(x,y), q(x,y)$
+    Output:
+        Float $D_\mathrm{KL}(p(X|Y) || q(X|Y)) = \sum_{x,y} p(x,y) \log \frac{p(x|y)}{q(x|y)}$
+    """
+
+    if p.ndim != q.ndim:
+        raise ValueError('Input array p and q must have same dimension')
+    if p.ndim != 2:
+        raise ValueError('Input array p must be 2D ndarray')
+
+    X_range = np.shape(p)[0]
+    Y_range = np.shape(p)[1]
+
+    # Conditional probability distribution p(x|y) and q(x|y)
+    px_cond_y = conditional_probability(p)
+    qx_cond_y = conditional_probability(q)
+
+    return sum(sum(
+        p[i][j] * np.log(px_cond_y[i]/qx_cond_y[i]) for i in range(X_range)
+        ) for j in range(Y_range)
     )
 
 

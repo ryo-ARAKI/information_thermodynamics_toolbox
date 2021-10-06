@@ -54,6 +54,24 @@ def shannon_entropy(p):
     return sum(-p[i] * np.log(p[i]) for i in range(len(p)))
 
 
+def relative_entropy(p, q):
+    """
+    Compute the relative entropy
+    or the Kullback-Leibler distance.
+    Input:
+        1D ndarray * 2 $p(x), q(x)$
+    Output:
+        Float $D_\mathrm{KL}(p(X) || q(X)) = \sum_x p(x) \log \frac{p(x)}{q(x)}$
+    """
+
+    if p.ndim != 1:
+        raise ValueError('Input array p must be 1D ndarray')
+    if q.ndim != 1:
+        raise ValueError('Input array q must be 1D ndarray')
+
+    return sum(p[i] * np.log(p[i]/q[i]) for i in range(len(p)))
+
+
 # main
 if __name__ == '__main__':
 
@@ -73,6 +91,9 @@ if __name__ == '__main__':
     y = np.array([0.2, 0.8])
     print("Relative entropy of x=", x, "and y=", y)
     print("Satisfy sum(y)=1:", check_probability_sum(y))
+    print("Code: ", '{:6.4f}'.format(
+        relative_entropy(x, y)
+    ))
     print("Scipy:", '{:6.4f}'.format(
         stats.entropy(pk=x, qk=y, base=np.e)
     ))

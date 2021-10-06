@@ -1,2 +1,2 @@
-# Information_thermodynamics_toolbox
-Implementation of quantities of Information thermodynamics
+# information_thermodynamics_toolbox
+Implement quantities of Information thermodynamics

@@ -117,31 +117,47 @@ def relative_entropy(p, q):
     or the Kullback-Leibler distance.
     Input:
         1D ndarray * 2 $p(x), q(x)$ or
-        2D ndarray * 2 $p(x,y), q(x,y)$
     Output:
         Float
         $$
         D_\mathrm{KL}(p(x) || q(x))
             = \sum_x p(x) \log \frac{p(x)}{q(x)},
-        D_\mathrm{KL}(p(x,y) || p(x)q(y))
+        $$
+    """
+
+    if p.ndim != q.ndim:
+        raise ValueError('Input array p and q must have same dimension')
+    if p.ndim != 1:
+        raise ValueError('Input array p must be 1D ndarray')
+
+    return sum(p[i] * np.log(p[i]/q[i]) for i in range(len(p)))
+
+
+def joint_relative_entropy(p, q):
+    """
+    Compute the joint relative entropy.
+    Input:
+        2D ndarray * 2 $p(x,y), q(x,y)$
+    Output:
+        Float
+        $$
+        D_\mathrm{KL}(p(X,Y) || q(X,Y))
             = \sum_{x,y} p(x,y) \log \frac{p(x,y)}{q(x,y)}
         $$
     """
 
     if p.ndim != q.ndim:
         raise ValueError('Input array p and q must have same dimension')
+    if p.ndim != 2:
+        raise ValueError('Input array p must be 2D ndarray')
 
-    if p.ndim == 1:
-        return sum(p[i] * np.log(p[i]/q[i]) for i in range(len(p)))
-    elif p.ndim == 2:
+    X_range = np.shape(p)[0]
+    Y_range = np.shape(p)[1]
 
-        X_range = np.shape(p)[0]
-        Y_range = np.shape(p)[1]
-
-        return sum(sum(
-            p[i][j] * np.log(p[i][j]/q[i][j]) for i in range(X_range))
-            for j in range(Y_range)
-        )
+    return sum(
+        sum(p[i][j] * np.log(p[i][j]/q[i][j]) for i in range(X_range))
+        for j in range(Y_range)
+    )
 
 
 def mutual_information(p):
@@ -178,7 +194,7 @@ def mutual_information(p):
     # I(X;Y) = S(X) - S(X|Y)
     MI_se = shannon_entropy(marginal_probability(p)) - conditional_entropy(p)
     # I(X;Y) = D_\mathrm{KL} (p(x,y) || p(x)p(y))
-    MI_kl = relative_entropy(p, np.tensordot(px, py, axes=0))
+    MI_kl = joint_relative_entropy(p, np.tensordot(px, py, axes=0))
 
     print("\n=====")
     print("Compute MI in different ways")

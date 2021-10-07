@@ -217,7 +217,7 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        # Conditional probability distribution p(x|y) and q(x|y)
+        # Marginal probability distribution p(x) and q(y)
         px = self.marginal_probability(p)
         py = self.marginal_probability(p.transpose()).transpose()
 
@@ -228,7 +228,7 @@ class InformationThermodynamics():
             for j in range(self.yrange)
         )
         # I(X;Y) = S(X) - S(X|Y)
-        MI_se = self.shannon_entropy(self.marginal_probability(p)) \
+        MI_se = self.shannon_entropy(px) \
             - self.conditional_entropy(p)
         # I(X;Y) = D_\mathrm{KL} (p(x,y) || p(x)p(y))
         MI_kl = self.joint_relative_entropy(p, np.tensordot(px, py, axes=0))

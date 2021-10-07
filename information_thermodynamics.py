@@ -243,21 +243,32 @@ class InformationThermodynamics():
         return MI
 
 
-# main
-if __name__ == '__main__':
+def prepare_2d_probability_distribution():
+    """
+    Prepare 2D probability distribution p(x,y) by 2D histogram
+    """
 
-    # Prepare 2D probability distribution p(x,y) by 2D histgram
     # Set edge of bin
     xedges = [0.0, 0.5, 1.0]
     yedges = [0.0, 0.5, 1.0]
     # Set X and Y (binary array)
     x = np.array([1, 1, 1, 0, 0, 1, 0, 0, 0, 1])
     y = np.array([1, 1, 1, 0, 0, 1, 0, 0, 0, 1])
-    # Prepare histgram = p(x,y)
-    H, xedges, yedges = np.histogram2d(x, y, bins=(xedges, yedges))
-    H /= np.sum(H)
+    # Prepare histogram = p(x,y)
+    histogram, xedges, yedges = np.histogram2d(x, y, bins=(xedges, yedges))
+    histogram /= np.sum(histogram)
     # Substitute 0 by finite value to avoid log(0) error
-    H[H == 0] = float(1e-8)
+    histogram[histogram == 0] = float(1e-8)
+
+    return x, y, histogram
+
+
+# main
+if __name__ == '__main__':
+
+    # Prepare test data
+    x, y, H = prepare_2d_probability_distribution()
+
 
     # Declare class containing functions to compute
     # Information thermodynamics quantities

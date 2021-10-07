@@ -21,8 +21,9 @@ from sklearn.metrics import mutual_info_score
 
 class InformationThermodynamics():
 
-    def __init__(self, p):
-        self.range = len(p)
+    def __init__(self, H):
+        self.xrange = np.shape(H)[0]
+        self.yrange = np.shape(H)[1]
 
 
     def check_probability_sum(self, p):
@@ -264,36 +265,6 @@ class InformationThermodynamics():
 # main
 if __name__ == '__main__':
 
-    # Prepare test array
-    x = np.array([0.95, 0.05])
-    y = np.array([0.2, 0.8])
-
-    # Declare class containing functions to compute
-    # Information thermodynamics quantities
-    InfoThermo = InformationThermodynamics(x)
-
-    # Entropy
-    print("Entropy of p(x)=", x)
-    print("Satisfy sum(x)=1:", InfoThermo.check_probability_sum(x))
-    print("Code: ", '{:6.4f}'.format(
-        InfoThermo.shannon_entropy(x)
-    ))
-    print("Scipy:", '{:6.4f}'.format(
-        stats.entropy(x, base=np.e)
-    ))
-    print("")
-
-    # Relative entropy (Kullback-Leibler divergence)
-    print("Relative entropy of p(x)=", x, "and q(x)=", y)
-    print("Satisfy sum(q)=1:", InfoThermo.check_probability_sum(y))
-    print("Code: ", '{:6.4f}'.format(
-        InfoThermo.relative_entropy(x, y)
-    ))
-    print("Scipy:", '{:6.4f}'.format(
-        stats.entropy(pk=x, qk=y, base=np.e)
-    ))
-    print("")
-
     # Prepare 2D probability distribution p(x,y) by 2D histgram
     # Set edge of bin
     xedges = [0.0, 0.5, 1.0]
@@ -306,6 +277,34 @@ if __name__ == '__main__':
     H /= np.sum(H)
     # Substitute 0 by finite value to avoid log(0) error
     H[H == 0] = float(1e-8)
+
+    # Declare class containing functions to compute
+    # Information thermodynamics quantities
+    InfoThermo = InformationThermodynamics(H)
+
+    # Entropy
+    px = InfoThermo.marginal_probability(H)
+    print("Entropy of p(x)=", px)
+    print("Satisfy sum(x)=1:", InfoThermo.check_probability_sum(px))
+    print("Code: ", '{:6.4f}'.format(
+        InfoThermo.shannon_entropy(px)
+    ))
+    print("Scipy:", '{:6.4f}'.format(
+        stats.entropy(px, base=np.e)
+    ))
+    print("")
+
+    # Relative entropy (Kullback-Leibler divergence)
+    py = InfoThermo.marginal_probability(H.transpose()).transpose()
+    print("Relative entropy of p(x)=", px, "and q(x)=", py)
+    print("Satisfy sum(q)=1:", InfoThermo.check_probability_sum(py))
+    print("Code: ", '{:6.4f}'.format(
+        InfoThermo.relative_entropy(px, py)
+    ))
+    print("Scipy:", '{:6.4f}'.format(
+        stats.entropy(pk=px, qk=py, base=np.e)
+    ))
+    print("")
 
     # Mutual information
     print("Mutual information of p(x,y):\n", H)

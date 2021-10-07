@@ -37,12 +37,10 @@ class InformationThermodynamics():
         """
 
         if p.ndim == 1:
-            return np.isclose(sum(p[i] for i in range(len(p))), 1.0, rtol=1e-5)
+            return np.isclose(sum(p[i] for i in range(self.xrange)), 1.0, rtol=1e-5)
         elif p.ndim == 2:
-            X_range = np.shape(p)[0]
-            Y_range = np.shape(p)[1]
             return np.isclose(
-                sum(sum(p[i][j] for i in range(X_range)) for j in range(Y_range)),
+                sum(sum(p[i][j] for i in range(self.xrange)) for j in range(self.yrange)),
                 1.0, rtol=1e-5
             )
 
@@ -59,9 +57,7 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        Y_range = np.shape(p)[1]
-
-        return sum(p[:][j] for j in range(Y_range))
+        return sum(p[:][j] for j in range(self.yrange))
 
 
     def conditional_probability(self, p):
@@ -91,7 +87,7 @@ class InformationThermodynamics():
         if p.ndim != 1:
             raise ValueError('Input array p must be 1D ndarray')
 
-        return sum(-p[i] * np.log(p[i]) for i in range(len(p)))
+        return sum(-p[i] * np.log(p[i]) for i in range(self.xrange))
 
 
     def joint_entropy(self, p):
@@ -106,12 +102,9 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        X_range = np.shape(p)[0]
-        Y_range = np.shape(p)[1]
-
         return sum(
-            sum(-p[i][j] * np.log(p[i][j]) for i in range(X_range))
-            for j in range(Y_range)
+            sum(-p[i][j] * np.log(p[i][j]) for i in range(self.xrange))
+            for j in range(self.yrange)
         )
 
 
@@ -127,15 +120,12 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        X_range = np.shape(p)[0]
-        Y_range = np.shape(p)[1]
-
         # Conditional probability distribution p(x|y)
         px_cond_y = self.conditional_probability(p)
 
         return sum(
-            sum(-p[i][j] * np.log(px_cond_y[i][j]) for i in range(X_range))
-            for j in range(Y_range)
+            sum(-p[i][j] * np.log(px_cond_y[i][j]) for i in range(self.xrange))
+            for j in range(self.yrange)
         )
 
 
@@ -158,7 +148,7 @@ class InformationThermodynamics():
         if p.ndim != 1:
             raise ValueError('Input array p must be 1D ndarray')
 
-        return sum(p[i] * np.log(p[i]/q[i]) for i in range(len(p)))
+        return sum(p[i] * np.log(p[i]/q[i]) for i in range(self.xrange))
 
 
     def joint_relative_entropy(self, p, q):
@@ -179,12 +169,9 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        X_range = np.shape(p)[0]
-        Y_range = np.shape(p)[1]
-
         return sum(
-            sum(p[i][j] * np.log(p[i][j]/q[i][j]) for i in range(X_range))
-            for j in range(Y_range)
+            sum(p[i][j] * np.log(p[i][j]/q[i][j]) for i in range(self.xrange))
+            for j in range(self.yrange)
         )
 
 
@@ -202,16 +189,13 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        X_range = np.shape(p)[0]
-        Y_range = np.shape(p)[1]
-
         # Conditional probability distribution p(x|y) and q(x|y)
         px_cond_y = self.conditional_probability(p)
         qx_cond_y = self.conditional_probability(q)
 
         return sum(sum(
-            p[i][j] * np.log(px_cond_y[i]/qx_cond_y[i]) for i in range(X_range)
-            ) for j in range(Y_range)
+            p[i][j] * np.log(px_cond_y[i]/qx_cond_y[i]) for i in range(self.xrange)
+            ) for j in range(self.yrange)
         )
 
 
@@ -233,9 +217,6 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        X_range = np.shape(p)[0]
-        Y_range = np.shape(p)[1]
-
         # Conditional probability distribution p(x|y) and q(x|y)
         px = self.marginal_probability(p)
         py = self.marginal_probability(p.transpose()).transpose()
@@ -243,8 +224,8 @@ class InformationThermodynamics():
         # I(X;Y) = \sum_x p(x) [log p(x,y) - log p(x) - log p(y)]
         MI = sum(sum(
             p[i][j] * (np.log(p[i][j]) - np.log(px[i]) - np.log(py[j]))
-            for i in range(X_range))
-            for j in range(Y_range)
+            for i in range(self.xrange))
+            for j in range(self.yrange)
         )
         # I(X;Y) = S(X) - S(X|Y)
         MI_se = self.shannon_entropy(self.marginal_probability(p)) \

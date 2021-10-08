@@ -197,7 +197,7 @@ class InformationThermodynamics():
         qx_cond_y = self.conditional_probability(q)
 
         return sum(sum(
-            p[i,j] * np.log(px_cond_y[i]/qx_cond_y[i]) for i in range(self.xrange)
+            p[i,j] * np.log(px_cond_y[i,j]/qx_cond_y[i,j]) for i in range(self.xrange)
             ) for j in range(self.yrange)
         )
 
@@ -291,6 +291,12 @@ if __name__ == '__main__':
         stats.entropy(px, base=np.e)
     ), "\n")
 
+    print("Joint entropy of p(x,y)")
+    print("Library: NOT IMPLEMENTED")
+    print("Code:   ", '{:6.4f}'.format(
+        InfoThermo.joint_entropy(H)
+    ), "\n")
+
     # Relative entropy (Kullback-Leibler divergence)
     py = InfoThermo.marginal_probability(H.transpose()).transpose()
     print("Relative entropy of p(x)=", px, "and q(x)=", py)
@@ -300,6 +306,12 @@ if __name__ == '__main__':
     ))
     print("Scipy:", '{:6.4f}'.format(
         stats.entropy(pk=px, qk=py, base=np.e)
+    ), "\n")
+
+    print("Conditional relative entropy of p(x,y) & p(x,y)")
+    print("Library: NOT IMPLEMENTED")
+    print("Code:   ", '{:6.4f}'.format(
+        InfoThermo.conditional_relative_entropy(H, H)
     ), "\n")
 
     # Mutual information

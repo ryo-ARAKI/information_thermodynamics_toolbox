@@ -72,7 +72,10 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        return p / self.marginal_probability(p)
+        py = self.marginal_probability(p)
+        px_1 = np.ones_like(py)
+
+        return p / np.tensordot(px_1, py, axes=0)
 
 
     def shannon_entropy(self, p):

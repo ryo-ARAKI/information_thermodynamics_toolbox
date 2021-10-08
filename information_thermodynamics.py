@@ -40,7 +40,7 @@ class InformationThermodynamics():
             return np.isclose(sum(p[i] for i in range(self.xrange)), 1.0, rtol=1e-5)
         elif p.ndim == 2:
             return np.isclose(
-                sum(sum(p[i][j] for i in range(self.xrange)) for j in range(self.yrange)),
+                sum(sum(p[i,j] for i in range(self.xrange)) for j in range(self.yrange)),
                 1.0, rtol=1e-5
             )
 
@@ -57,7 +57,7 @@ class InformationThermodynamics():
         if p.ndim != 2:
             raise ValueError('Input array p must be 2D ndarray')
 
-        return sum(p[:][j] for j in range(self.yrange))
+        return sum(p[:,j] for j in range(self.yrange))
 
 
     def conditional_probability(self, p):
@@ -106,7 +106,7 @@ class InformationThermodynamics():
             raise ValueError('Input array p must be 2D ndarray')
 
         return sum(
-            sum(-p[i][j] * np.log(p[i][j]) for i in range(self.xrange))
+            sum(-p[i,j] * np.log(p[i,j]) for i in range(self.xrange))
             for j in range(self.yrange)
         )
 
@@ -127,7 +127,7 @@ class InformationThermodynamics():
         px_cond_y = self.conditional_probability(p)
 
         return sum(
-            sum(-p[i][j] * np.log(px_cond_y[i][j]) for i in range(self.xrange))
+            sum(-p[i,j] * np.log(px_cond_y[i,j]) for i in range(self.xrange))
             for j in range(self.yrange)
         )
 
@@ -173,7 +173,7 @@ class InformationThermodynamics():
             raise ValueError('Input array p must be 2D ndarray')
 
         return sum(
-            sum(p[i][j] * np.log(p[i][j]/q[i][j]) for i in range(self.xrange))
+            sum(p[i,j] * np.log(p[i,j]/q[i,j]) for i in range(self.xrange))
             for j in range(self.yrange)
         )
 
@@ -197,7 +197,7 @@ class InformationThermodynamics():
         qx_cond_y = self.conditional_probability(q)
 
         return sum(sum(
-            p[i][j] * np.log(px_cond_y[i]/qx_cond_y[i]) for i in range(self.xrange)
+            p[i,j] * np.log(px_cond_y[i]/qx_cond_y[i]) for i in range(self.xrange)
             ) for j in range(self.yrange)
         )
 
@@ -226,7 +226,7 @@ class InformationThermodynamics():
 
         # I(X;Y) = \sum_x p(x) [log p(x,y) - log p(x) - log p(y)]
         MI = sum(sum(
-            p[i][j] * (np.log(p[i][j]) - np.log(px[i]) - np.log(py[j]))
+            p[i,j] * (np.log(p[i,j]) - np.log(px[i]) - np.log(py[j]))
             for i in range(self.xrange))
             for j in range(self.yrange)
         )

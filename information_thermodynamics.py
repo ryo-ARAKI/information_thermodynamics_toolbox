@@ -197,7 +197,7 @@ class InformationThermodynamics():
         qx_cond_y = self.conditional_probability(q)
 
         return sum(sum(
-            p[i,j] * np.log(px_cond_y[i]/qx_cond_y[i]) for i in range(self.xrange)
+            p[i,j] * np.log(px_cond_y[i,j]/qx_cond_y[i,j]) for i in range(self.xrange)
             ) for j in range(self.yrange)
         )
 

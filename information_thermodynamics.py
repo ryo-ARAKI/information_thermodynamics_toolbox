@@ -260,6 +260,9 @@ def prepare_2d_probability_distribution():
     # Substitute 0 by finite value to avoid log(0) error
     histogram[histogram == 0] = float(1e-8)
 
+    # Stdout probability distributions
+    print("2D probability distribution p(x,y)\n", histogram, "\n")
+
     return x, y, histogram
 
 
@@ -283,8 +286,7 @@ if __name__ == '__main__':
     ))
     print("Scipy:", '{:6.4f}'.format(
         stats.entropy(px, base=np.e)
-    ))
-    print("")
+    ), "\n")
 
     # Relative entropy (Kullback-Leibler divergence)
     py = InfoThermo.marginal_probability(H.transpose()).transpose()
@@ -295,16 +297,14 @@ if __name__ == '__main__':
     ))
     print("Scipy:", '{:6.4f}'.format(
         stats.entropy(pk=px, qk=py, base=np.e)
-    ))
-    print("")
+    ), "\n")
 
     # Mutual information
-    print("Mutual information of p(x,y):\n", H)
+    print("Mutual information of p(x,y)")
     print("Satisfy sum(p)=1:", InfoThermo.check_probability_sum(H))
     print("sklearn: ", '{:6.4f}'.format(
         mutual_info_score(x, y)
     ))
     print("Code:    ", '{:6.4f}'.format(
         InfoThermo.mutual_information(H)
-    ))
-    print("")
+    ), "\n")

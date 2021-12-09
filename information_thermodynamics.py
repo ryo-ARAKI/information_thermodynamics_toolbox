@@ -224,7 +224,7 @@ class InformationThermodynamics():
         px = self.marginal_probability(p)
         py = self.marginal_probability(p.transpose()).transpose()
 
-        # I(X;Y) = \sum_x p(x) [log p(x,y) - log p(x) - log p(y)]
+        # I(X;Y) = \sum_x \sum_y p(x) [log p(x,y) - log p(x) - log p(y)]
         MI = sum(sum(
             p[i,j] * (np.log(p[i,j]) - np.log(px[i]) - np.log(py[j]))
             for i in range(self.xrange))

@@ -177,7 +177,7 @@ function mutual_information(p)
     px = marginal_probability(p)
     py = marginal_probability(transpose(p))
 
-    # I(X;Y) = \sum_x p(x) [log p(x,y) - log p(x) - log p(y)]
+    # I(X;Y) = \sum_x \sum_y p(x) [log p(x,y) - log p(x) - log p(y)]
     MI = 0.0
     for row = 1:size(p, 1), col = 1:size(p, 2)
         MI += p[row, col] * (

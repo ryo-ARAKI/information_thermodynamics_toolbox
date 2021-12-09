@@ -60,7 +60,7 @@ function conditional_probability(p)
     py = marginal_probability(transpose(p))
     px_1 = vec(ones(length(py), 1))
 
-    return p ./ sum(px_1 .* py, dims=1)
+    return p ./ (px_1 .* transpose(py))
 end
 
 """

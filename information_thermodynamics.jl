@@ -13,7 +13,8 @@ References:
 =#
 
 module InformationThermodynamics
-export check_probability_sum, marginal_probability, shannon_entropy
+export check_probability_sum, marginal_probability
+export shannon_entropy
 
 """
 Check probability distribution.
@@ -46,16 +47,12 @@ end
 """
 Compute Shannon entropy.
 Input:
-    1D ndarray p(x)
+    1D or 2D array p(x)
 Output:
-    Float S(X) = - sum_x p(x) log p(x)
+    1D: Float S(X) = - sum_x p(x) log p(x)
+    2D: Float S(X, Y) = - sum_{x,y} p(x,y) log p(x,y)
 """
 function shannon_entropy(p)
-
-    if length(size(p)) != 1
-        throw(error("Input array p must be 1D array"))
-    end
-
     return sum(-p .* log.(p))
 end
 
@@ -101,7 +98,11 @@ function main()
     px = marginal_probability(H.weights)
     println("Entropy of p(x)=", px)
     println("Satisfy sum(x)=1:", check_probability_sum(px))
-    println(@sprintf "Code: %6.4f" shannon_entropy(px))
+    println(@sprintf "Code: %6.4f\n" shannon_entropy(px))
+
+    println("Joint entropy of p(x,y)")
+    println("Library: NOT IMPLEMENTED")
+    println(@sprintf "Code: %6.4f\n" shannon_entropy(H.weights))
 end
 
 main()

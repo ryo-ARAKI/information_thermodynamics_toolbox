@@ -13,7 +13,20 @@ References:
 =#
 
 module InformationThermodynamics
+export check_probability_sum
 export marginal_probability
+
+"""
+Check probability distribution.
+Input:
+    1D ndarray p(x) or
+    2D ndarray p(x,y)
+Output:
+    True if sum_x p(x) = 1 or sum_{x,y} p(x,y) = 1, False if not.
+"""
+function check_probability_sum(p)
+    return isapprox(sum(p), 1.0, rtol = 1e-5)
+end
 
 """
 Compute marginal probability.
@@ -73,6 +86,7 @@ function main()
     # Entropy
     px = marginal_probability(H.weights)
     println("Entropy of p(x)=", px)
+    println("Satisfy sum(x)=1:", check_probability_sum(px))
 end
 
 main()

@@ -38,10 +38,11 @@ Output:
 function marginal_probability(p)
 
     if length(size(p)) != 2
-        throw(error("Input array p must be 2D ndarray"))
+        throw(error("Input array p must be 2D array"))
     end
 
-    return sum(p, dims = 2)
+    return vec(sum(p, dims = 2))
+end
 
 end
 

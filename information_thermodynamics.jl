@@ -11,3 +11,13 @@ References:
     - For test of implemented functions and libraries.
         - ***Note: This article employs np.log2 instead of np.log***
 =#
+
+module InformationThermodynamics
+end
+
+
+# main
+function main()
+end
+
+main()

@@ -41,19 +41,20 @@ Prepare 2D probability distribution p(x,y) by 2D histogram
 function prepare_2d_probability_distribution()
 
     # Set edge of bin
-    xedges = [0.0, 0.5, 1.0]
-    yedges = [0.0, 0.5, 1.0]
+    eps = 1e-8
+    xedges = [-0.0-eps, 0.5, 1.0+eps]
+    yedges = [-0.0-eps, 0.5, 1.0+eps]
     # Set X and Y (binary array)
     x = [1, 1, 1, 0, 0, 1, 0, 0, 0, 1]
     y = [1, 1, 1, 0, 0, 1, 0, 0, 0, 1]
     # Prepare histogram = p(x,y)
     histogram = fit(Histogram{Float64}, (x, y), (xedges, yedges))
-    normalize(histogram)
+    histogram = normalize(histogram, mode = :probability)
     # Substitute 0 by finite value to avoid log(0) error
     histogram.weights[histogram.weights.==0.0] .= 1.0e-8
 
     # Stdout probability distributions
-    print("2D probability distribution p(x,y)\n", histogram, "\n")
+    print("2D probability distribution p(x,y)\n", histogram.weights, "\n")
 
     return x, y, histogram
 end

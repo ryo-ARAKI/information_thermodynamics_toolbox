@@ -31,6 +31,32 @@ function check_probability_sum(p)
 end
 
 """
+Check array is 1D
+"""
+function check_is_array_1D(p)
+    if length(size(p)) != 1
+        throw(error("Input array p must be 1D array"))
+    end
+end
+
+"""
+Check array is 2D
+"""
+function check_is_array_2D(p)
+    if length(size(p)) != 2
+        throw(error("Input array p must be 2D array"))
+    end
+end
+"""
+Check array size mismatch 2D
+"""
+function check_is_array_size_match(p, q)
+    if length(size(p)) != length(size(q))
+        throw(error("Input array p and q must have same dimension"))
+    end
+end
+
+"""
 Compute marginal probability.
 Input:
     2D array p(x,y)
@@ -38,9 +64,7 @@ Output:
     1D array p(x) = sum_y p(x,y)
 """
 function marginal_probability(p)
-    if length(size(p)) != 2
-        throw(error("Input array p must be 2D array"))
-    end
+    check_is_array_2D(p)
 
     return vec(sum(p, dims = 2))
 end
@@ -53,9 +77,7 @@ Output:
     2D array p(x|y) = p(x,y) / p(y)
 """
 function conditional_probability(p)
-    if length(size(p)) != 2
-        throw(error("Input array p must be 2D array"))
-    end
+    check_is_array_2D(p)
 
     py = marginal_probability(transpose(p))
     px_1 = vec(ones(length(py), 1))
@@ -83,9 +105,7 @@ Output:
     Float S(X|Y) = - sum_{x,y} p(x,y) log p(x|y)
 """
 function conditional_entropy(p)
-    if length(size(p)) != 2
-        throw(error("Input array p must be 2D array"))
-    end
+    check_is_array_2D(p)
 
     # Conditional probability distribution p(x|y)
     px_cond_y = conditional_probability(p)
@@ -104,12 +124,8 @@ Output:
         = sum_x p(x) log frac{p(x)}{q(x)},
 """
 function relative_entropy(p, q)
-    if length(size(p)) != length(size(q))
-        throw(error("Input array p and q must have same dimension"))
-    end
-    if length(size(p)) != 1
-        throw(error("Input array p must be 1D array"))
-    end
+    check_is_array_size_match(p, q)
+    check_is_array_1D(p)
 
     return sum(p .* log.(p ./ q))
 end
@@ -124,12 +140,8 @@ Output:
         = sum_{x,y} p(x,y) log frac{p(x,y)}{q(x,y)}
 """
 function joint_relative_entropy(p, q)
-    if length(size(p)) != length(size(q))
-        throw(error("Input array p and q must have same dimension"))
-    end
-    if length(size(p)) != 2
-        throw(error("Input array p must be 2D array"))
-    end
+    check_is_array_size_match(p, q)
+    check_is_array_2D(p)
 
     return sum(p .* log.(p ./ q))
 end
@@ -142,12 +154,8 @@ Output:
     Float D_mathrm{KL}(p(X|Y) || q(X|Y)) = sum_{x,y} p(x,y) log frac{p(x|y)}{q(x|y)}
 """
 function conditional_relative_entropy(p, q)
-    if length(size(p)) != length(size(q))
-        throw(error("Input array p and q must have same dimension"))
-    end
-    if length(size(p)) != 2
-        throw(error("Input array p must be 2D array"))
-    end
+    check_is_array_size_match(p, q)
+    check_is_array_2D(p)
 
     # Conditional probability distribution p(x|y) and q(x|y)
     px_cond_y = conditional_probability(p)
@@ -168,9 +176,7 @@ Output:
         = D_mathrm{KL} (p(x,y) || p(x)p(y))
 """
 function mutual_information(p)
-    if length(size(p)) != 2
-        throw(error("Input array p must be 2D array"))
-    end
+    check_is_array_2D(p)
 
     # Marginal probability distribution p(x) and q(y)
     px = marginal_probability(p)

@@ -45,6 +45,33 @@ class InformationThermodynamics():
             )
 
 
+    def check_is_array_1D(self, p):
+        """
+        Check array is 1D
+        """
+
+        if p.ndim != 1:
+            raise ValueError('Input array p must be 1D ndarray')
+
+
+    def check_is_array_2D(self, p):
+        """
+        Check array is 2D
+        """
+
+        if p.ndim != 2:
+            raise ValueError('Input array p must be 2D ndarray')
+
+
+    def check_is_array_size_match(self, p, q):
+        """
+        Check array size mismatch
+        """
+
+        if p.ndim != q.ndim:
+            raise ValueError('Input array p and q must have same dimension')
+
+
     def marginal_probability(self, p):
         """
         Compute marginal probability.
@@ -54,8 +81,7 @@ class InformationThermodynamics():
             1D ndarray $p(x) = \sum_y p(x,y)$
         """
 
-        if p.ndim != 2:
-            raise ValueError('Input array p must be 2D ndarray')
+        self.check_is_array_2D(p)
 
         return sum(p[:,j] for j in range(self.yrange))
 
@@ -69,8 +95,7 @@ class InformationThermodynamics():
             2D ndarray $p(x|y) = p(x,y) / p(y)$
         """
 
-        if p.ndim != 2:
-            raise ValueError('Input array p must be 2D ndarray')
+        self.check_is_array_2D(p)
 
         py = self.marginal_probability(p.transpose()).transpose()
         px_1 = np.ones_like(py)
@@ -87,8 +112,7 @@ class InformationThermodynamics():
             Float $S(X) = - \sum_x p(x) \log p(x)$
         """
 
-        if p.ndim != 1:
-            raise ValueError('Input array p must be 1D ndarray')
+        self.check_is_array_1D(p)
 
         return sum(-p[i] * np.log(p[i]) for i in range(self.xrange))
 
@@ -102,8 +126,7 @@ class InformationThermodynamics():
             Float $S(X, Y) = - \sum_{x,y} p(x,y) \log p(x,y)$
         """
 
-        if p.ndim != 2:
-            raise ValueError('Input array p must be 2D ndarray')
+        self.check_is_array_2D(p)
 
         return sum(
             sum(-p[i,j] * np.log(p[i,j]) for i in range(self.xrange))
@@ -120,8 +143,7 @@ class InformationThermodynamics():
             Float $S(X|Y) = - \sum_{x,y} p(x,y) \log p(x|y)$
         """
 
-        if p.ndim != 2:
-            raise ValueError('Input array p must be 2D ndarray')
+        self.check_is_array_2D(p)
 
         # Conditional probability distribution p(x|y)
         px_cond_y = self.conditional_probability(p)
@@ -146,10 +168,8 @@ class InformationThermodynamics():
             $$
         """
 
-        if p.ndim != q.ndim:
-            raise ValueError('Input array p and q must have same dimension')
-        if p.ndim != 1:
-            raise ValueError('Input array p must be 1D ndarray')
+        self.check_is_array_size_match(p, q)
+        self.check_is_array_1D(p)
 
         return sum(p[i] * np.log(p[i]/q[i]) for i in range(self.xrange))
 
@@ -167,10 +187,8 @@ class InformationThermodynamics():
             $$
         """
 
-        if p.ndim != q.ndim:
-            raise ValueError('Input array p and q must have same dimension')
-        if p.ndim != 2:
-            raise ValueError('Input array p must be 2D ndarray')
+        self.check_is_array_size_match(p, q)
+        self.check_is_array_2D(p)
 
         return sum(
             sum(p[i,j] * np.log(p[i,j]/q[i,j]) for i in range(self.xrange))
@@ -187,10 +205,8 @@ class InformationThermodynamics():
             Float $D_\mathrm{KL}(p(X|Y) || q(X|Y)) = \sum_{x,y} p(x,y) \log \frac{p(x|y)}{q(x|y)}$
         """
 
-        if p.ndim != q.ndim:
-            raise ValueError('Input array p and q must have same dimension')
-        if p.ndim != 2:
-            raise ValueError('Input array p must be 2D ndarray')
+        self.check_is_array_size_match(p, q)
+        self.check_is_array_2D(p)
 
         # Conditional probability distribution p(x|y) and q(x|y)
         px_cond_y = self.conditional_probability(p)
@@ -217,8 +233,7 @@ class InformationThermodynamics():
             $$
         """
 
-        if p.ndim != 2:
-            raise ValueError('Input array p must be 2D ndarray')
+        self.check_is_array_2D(p)
 
         # Marginal probability distribution p(x) and q(y)
         px = self.marginal_probability(p)

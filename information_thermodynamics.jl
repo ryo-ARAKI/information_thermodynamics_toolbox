@@ -14,7 +14,7 @@ References:
 
 module InformationThermodynamics
 export check_probability_sum, marginal_probability
-export shannon_entropy, relative_entropy
+export shannon_entropy, relative_entropy, conditional_relative_entropy
 
 """
 Check probability distribution.
@@ -42,6 +42,25 @@ function marginal_probability(p)
     end
 
     return vec(sum(p, dims = 2))
+end
+
+"""
+Compute conditional probability distribution.
+Input:
+    2D array p(x,y)
+Output:
+    2D array p(x|y) = p(x,y) / p(y)
+"""
+function conditional_probability(p)
+
+    if length(size(p)) != 2
+        throw(error("Input array p must be 2D array"))
+    end
+
+    py = marginal_probability(transpose(p))
+    px_1 = vec(ones(length(py), 1))
+
+    return p ./ sum(px_1 .* py, dims=1)
 end
 
 """
@@ -75,6 +94,28 @@ function relative_entropy(p, q)
     end
 
     return sum(p .* log.(p ./ q))
+end
+
+"""
+Compute the conditional relative entropy.
+Input:
+    2D array * 2 p(x,y), q(x,y)
+Output:
+    Float D_mathrm{KL}(p(X|Y) || q(X|Y)) = sum_{x,y} p(x,y) log frac{p(x|y)}{q(x|y)}
+"""
+function conditional_relative_entropy(p, q)
+    if length(size(p)) != length(size(q))
+        throw(error("Input array p and q must have same dimension"))
+    end
+    if length(size(p)) != 2
+        throw(error("Input array p must be 2D array"))
+    end
+
+    # Conditional probability distribution p(x|y) and q(x|y)
+    px_cond_y = conditional_probability(p)
+    qx_cond_y = conditional_probability(q)
+
+    return sum(p .* log.(px_cond_y ./ qx_cond_y))
 end
 end
 
@@ -130,6 +171,10 @@ function main()
     println(px)
     println(py)
     println(@sprintf "Code: %6.4f\n" relative_entropy(px, py))
+
+    println("Conditional relative entropy of p(x,y) & p(x,y)")
+    println("Library: NOT IMPLEMENTED")
+    println(@sprintf "Code: %6.4f\n" conditional_relative_entropy(H.weights, H.weights))
 end
 
 main()

@@ -16,8 +16,36 @@ module InformationThermodynamics
 end
 
 
+"""
+Prepare 2D probability distribution p(x,y) by 2D histogram
+"""
+function prepare_2d_probability_distribution()
+
+    # Set edge of bin
+    xedges = [0.0, 0.5, 1.0]
+    yedges = [0.0, 0.5, 1.0]
+    # Set X and Y (binary array)
+    x = [1, 1, 1, 0, 0, 1, 0, 0, 0, 1]
+    y = [1, 1, 1, 0, 0, 1, 0, 0, 0, 1]
+    # Prepare histogram = p(x,y)
+    histogram = fit(Histogram{Float64}, (x, y), (xedges, yedges))
+    normalize(histogram)
+    # Substitute 0 by finite value to avoid log(0) error
+    histogram.weights[histogram.weights.==0.0] .= 1.0e-8
+
+    # Stdout probability distributions
+    print("2D probability distribution p(x,y)\n", histogram, "\n")
+
+    return x, y, histogram
+end
+
+
 # main
+using StatsBase
+using LinearAlgebra
 function main()
+    # Prepare test data
+    x, y, H = prepare_2d_probability_distribution()
 end
 
 main()

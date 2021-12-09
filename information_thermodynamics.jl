@@ -18,8 +18,8 @@ export check_probability_sum, marginal_probability, shannon_entropy
 """
 Check probability distribution.
 Input:
-    1D ndarray p(x) or
-    2D ndarray p(x,y)
+    1D array p(x) or
+    2D array p(x,y)
 Output:
     True if sum_x p(x) = 1 or sum_{x,y} p(x,y) = 1, False if not.
 """
@@ -30,9 +30,9 @@ end
 """
 Compute marginal probability.
 Input:
-    2D ndarray p(x,y)
+    2D array p(x,y)
 Output:
-    1D ndarray p(x) = sum_y p(x,y)
+    1D array p(x) = sum_y p(x,y)
 """
 function marginal_probability(p)
 

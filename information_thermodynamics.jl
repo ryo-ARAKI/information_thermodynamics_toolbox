@@ -13,6 +13,25 @@ References:
 =#
 
 module InformationThermodynamics
+export marginal_probability
+
+"""
+Compute marginal probability.
+Input:
+    2D ndarray p(x,y)
+Output:
+    1D ndarray p(x) = sum_y p(x,y)
+"""
+function marginal_probability(p)
+
+    if length(size(p)) != 2
+        throw(error("Input array p must be 2D ndarray"))
+    end
+
+    return sum(p, dims = 2)
+
+end
+
 end
 
 
@@ -41,11 +60,18 @@ end
 
 
 # main
+using Printf
 using StatsBase
 using LinearAlgebra
+using .InformationThermodynamics
 function main()
+
     # Prepare test data
     x, y, H = prepare_2d_probability_distribution()
+
+    # Entropy
+    px = marginal_probability(H.weights)
+    println("Entropy of p(x)=", px)
 end
 
 main()

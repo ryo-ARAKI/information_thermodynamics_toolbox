@@ -14,7 +14,7 @@ References:
 
 module InformationThermodynamics
 export check_probability_sum, marginal_probability
-export shannon_entropy
+export shannon_entropy, relative_entropy
 
 """
 Check probability distribution.
@@ -56,8 +56,27 @@ function shannon_entropy(p)
     return sum(-p .* log.(p))
 end
 
-end
+"""
+Compute the relative entropy
+or the Kullback-Leibler distance.
+Input:
+    1D array * 2 p(x), q(x)
+Output:
+    Float
+    D_mathrm{KL}(p(x) || q(x))
+        = sum_x p(x) log frac{p(x)}{q(x)},
+"""
+function relative_entropy(p, q)
+    if length(size(p)) != length(size(q))
+        throw(error("Input array p and q must have same dimension"))
+    end
+    if length(size(p)) != 1
+        throw(error("Input array p must be 1D array"))
+    end
 
+    return sum(p .* log.(p ./ q))
+end
+end
 
 """
 Prepare 2D probability distribution p(x,y) by 2D histogram
@@ -103,6 +122,14 @@ function main()
     println("Joint entropy of p(x,y)")
     println("Library: NOT IMPLEMENTED")
     println(@sprintf "Code: %6.4f\n" shannon_entropy(H.weights))
+
+    # Relative entropy (Kullback-Leibler divergence)
+    py = marginal_probability(transpose(H.weights))
+    println("Relative entropy of p(x)=", px, "and q(x)=", py)
+    println("Satisfy sum(q)=1:", check_probability_sum(py))
+    println(px)
+    println(py)
+    println(@sprintf "Code: %6.4f\n" relative_entropy(px, py))
 end
 
 main()

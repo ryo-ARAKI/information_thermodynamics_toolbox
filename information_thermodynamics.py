@@ -307,10 +307,10 @@ if __name__ == '__main__':
     ), "\n")
 
     print("Joint entropy of p(x,y)")
-    print("Library: NOT IMPLEMENTED")
     print("Code:   ", '{:6.4f}'.format(
         InfoThermo.joint_entropy(H)
-    ), "\n")
+    ))
+    print("Library: NOT IMPLEMENTED\n")
 
     # Relative entropy (Kullback-Leibler divergence)
     py = InfoThermo.marginal_probability(H.transpose()).transpose()
@@ -324,17 +324,17 @@ if __name__ == '__main__':
     ), "\n")
 
     print("Conditional relative entropy of p(x,y) & p(x,y)")
-    print("Library: NOT IMPLEMENTED")
     print("Code:   ", '{:6.4f}'.format(
         InfoThermo.conditional_relative_entropy(H, H)
-    ), "\n")
+    ))
+    print("Library: NOT IMPLEMENTED\n")
 
     # Mutual information
     print("Mutual information of p(x,y)")
     print("Satisfy sum(p)=1:", InfoThermo.check_probability_sum(H))
-    print("sklearn: ", '{:6.4f}'.format(
-        mutual_info_score(x, y)
-    ))
     print("Code:    ", '{:6.4f}'.format(
         InfoThermo.mutual_information(H)
+    ))
+    print("sklearn: ", '{:6.4f}'.format(
+        mutual_info_score(x, y)
     ), "\n")

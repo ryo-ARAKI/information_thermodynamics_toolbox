@@ -47,6 +47,7 @@ function check_is_array_2D(p)
         throw(error("Input array p must be 2D array"))
     end
 end
+
 """
 Check array size mismatch 2D
 """
@@ -245,26 +246,29 @@ function main()
     px = marginal_probability(H.weights)
     println("Entropy of p(x)=", px)
     println("Satisfy sum(x)=1: ", check_probability_sum(px))
-    println(@sprintf "Code: %6.4f\n" shannon_entropy(px))
+    println(@sprintf "Code: %6.4f" shannon_entropy(px))
+    println("Library: NOT IMPLEMENTED\n")
 
     println("Joint entropy of p(x,y)")
-    println("Library: NOT IMPLEMENTED")
-    println(@sprintf "Code: %6.4f\n" shannon_entropy(H.weights))
+    println(@sprintf "Code: %6.4f" shannon_entropy(H.weights))
+    println("Library: NOT IMPLEMENTED\n")
 
     # Relative entropy (Kullback-Leibler divergence)
     py = marginal_probability(transpose(H.weights))
     println("Relative entropy of p(x)=", px, "and q(x)=", py)
     println("Satisfy sum(q)=1: ", check_probability_sum(py))
-    println(@sprintf "Code: %6.4f\n" relative_entropy(px, py))
+    println(@sprintf "Code: %6.4f" relative_entropy(px, py))
+    println("Library: NOT IMPLEMENTED\n")
 
     println("Conditional relative entropy of p(x,y) & p(x,y)")
-    println("Library: NOT IMPLEMENTED")
-    println(@sprintf "Code: %6.4f\n" conditional_relative_entropy(H.weights, H.weights))
+    println(@sprintf "Code: %6.4f" conditional_relative_entropy(H.weights, H.weights))
+    println("Library: NOT IMPLEMENTED\n")
 
     # Mutual information
     println("Mutual information of p(x,y)")
     println("Satisfy sum(p)=1: ", check_probability_sum(H.weights))
-    println(@sprintf "Code: %6.4f\n" mutual_information(H.weights))
+    println(@sprintf "Code: %6.4f" mutual_information(H.weights))
+    println("Library: NOT IMPLEMENTED\n")
 end
 
 main()

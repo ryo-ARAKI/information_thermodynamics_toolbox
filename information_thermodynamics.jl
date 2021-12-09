@@ -38,7 +38,6 @@ Output:
     1D array p(x) = sum_y p(x,y)
 """
 function marginal_probability(p)
-
     if length(size(p)) != 2
         throw(error("Input array p must be 2D array"))
     end
@@ -54,7 +53,6 @@ Output:
     2D array p(x|y) = p(x,y) / p(y)
 """
 function conditional_probability(p)
-
     if length(size(p)) != 2
         throw(error("Input array p must be 2D array"))
     end

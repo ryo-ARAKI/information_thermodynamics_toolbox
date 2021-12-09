@@ -220,7 +220,7 @@ function prepare_2d_probability_distribution()
     histogram.weights[histogram.weights.==0.0] .= 1.0e-8
 
     # Stdout probability distributions
-    print("2D probability distribution p(x,y)\n", histogram.weights, "\n")
+    println("2D probability distribution p(x,y)\n", histogram.weights, "\n")
 
     return x, y, histogram
 end
@@ -239,7 +239,7 @@ function main()
     # Entropy
     px = marginal_probability(H.weights)
     println("Entropy of p(x)=", px)
-    println("Satisfy sum(x)=1:", check_probability_sum(px))
+    println("Satisfy sum(x)=1: ", check_probability_sum(px))
     println(@sprintf "Code: %6.4f\n" shannon_entropy(px))
 
     println("Joint entropy of p(x,y)")
@@ -249,9 +249,7 @@ function main()
     # Relative entropy (Kullback-Leibler divergence)
     py = marginal_probability(transpose(H.weights))
     println("Relative entropy of p(x)=", px, "and q(x)=", py)
-    println("Satisfy sum(q)=1:", check_probability_sum(py))
-    println(px)
-    println(py)
+    println("Satisfy sum(q)=1: ", check_probability_sum(py))
     println(@sprintf "Code: %6.4f\n" relative_entropy(px, py))
 
     println("Conditional relative entropy of p(x,y) & p(x,y)")
@@ -260,7 +258,7 @@ function main()
 
     # Mutual information
     println("Mutual information of p(x,y)")
-    println("Satisfy sum(p)=1:", check_probability_sum(H.weights))
+    println("Satisfy sum(p)=1: ", check_probability_sum(H.weights))
     println(@sprintf "Code: %6.4f\n" mutual_information(H.weights))
 end
 

@@ -179,7 +179,7 @@ Output:
 function mutual_information(p)
     check_is_array_2D(p)
 
-    # Marginal probability distribution p(x) and q(y)
+    # Marginal probability distribution p(x) and p(y)
     px = marginal_probability(p)
     py = marginal_probability(transpose(p))
 

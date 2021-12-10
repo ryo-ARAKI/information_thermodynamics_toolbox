@@ -179,7 +179,7 @@ Output:
 function mutual_information(p)
     check_is_array_2D(p)
 
-    # Marginal probability distribution p(x) and q(y)
+    # Marginal probability distribution p(x) and p(y)
     px = marginal_probability(p)
     py = marginal_probability(transpose(p))
 
@@ -221,7 +221,7 @@ function prepare_2d_probability_distribution()
     y = [1, 1, 1, 0, 0, 1, 0, 0, 0, 1]
     # Prepare histogram = p(x,y)
     histogram = fit(Histogram{Float64}, (x, y), (xedges, yedges))
-    histogram = normalize(histogram, mode = :probability)
+    normalize!(histogram, mode = :probability)
     # Substitute 0 by finite value to avoid log(0) error
     histogram.weights[histogram.weights.==0.0] .= 1.0e-8
 
